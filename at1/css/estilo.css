@@ -1,0 +1,12 @@
+body {
+    background: url(/at1/img/background.jpg) no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh; /* Ocupa toda a altura da tela */
+}
+
+.container {
+    background-color: rgba(0, 0, 0, 0.37); /* Fundo preto */
+    color: white; /* Texto branco para contraste */
+    padding: 20px;
+    border-radius: 10px;
+}

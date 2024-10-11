@@ -1,76 +1,44 @@
-// Desenvolva um gerador de tabuada, capaz de gerar através de qualquer número inteiro, 
-// solicitando ao usuário o número e mostrando na tela conforme o exemplo abaixo:
-// Tabuada de 5:
-// 5 x 1 = 5
-// 5 x 2 = 10
-// ...
-// 5 x 10 = 50
-// Ao final, pergunte ao usuário se ele deseja realizar uma outra geração ou sair.
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("formCadastro");
+    const btnAdicionar = document.getElementById("btnAdicionar");
+    const tabelaBody = document.querySelector("#tabelaFuncionarios tbody");
+    let funcionarios = JSON.parse(sessionStorage.getItem("funcionarios")) || [];
 
+    const validarCampos = (nome, idade, salario) => {
+        const nomeValido = /^[a-zA-Z]+\s+[a-zA-Z]+$/.test(nome);
+        const idadeValida = idade > 14 && idade < 120;
+        const salarioValido = salario >= 1500 && salario <= 15000;
 
-// function tabelaPao() {
-//     let numero = document.querySelector('#numero').value;
+        return nomeValido && idadeValida && salarioValido;
+    };
 
-//     if (isNaN(numero) == true || numero == "") {
-//         alert("Número Inválido!");
-//         document.querySelector('#numero').value = "";
-//     } else {
-//         let msgPao = "";
-//         for (let i = 1; i <= 50; i++) {
+    const exibirFuncionarios = () => {
+        tabelaBody.innerHTML = "";
+        funcionarios.forEach(func => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${func.nome}</td><td>${func.idade}</td><td>${func.sexo}</td><td>R$ ${func.salario.toFixed(2)}</td>`;
+            tabelaBody.appendChild(tr);
+        });
+    };
 
-//             let ordem = (i === 1) ? "Pão" : "Pães";
-//             msgPao += ` ${i} ${ordem} = R$ ${(numero * i).toFixed(2)} <br>`;
-//         }
-//         document.querySelector('h5').innerHTML = msgPao;
-//         document.querySelector('#numero').disabled = true;
-//         document.querySelector('.btn-primary').disabled = true;
-//         document.querySelector('.btn-dark').disabled = false;
-//     }
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
 
+        const nome = document.getElementById("nome").value;
+        const idade = parseInt(document.getElementById("idade").value);
+        const sexo = document.getElementById("sexo").value;
+        const salario = parseFloat(document.getElementById("salario").value);
 
-// }
-// function liberarTabuada() {
-//     let podeGerar = confirm("Deseja gerar outra tabela de preço?");
-
-//     if (podeGerar == true) {
-//         document.querySelector('#numero').disabled = false;
-//         document.querySelector('.btn-primary').disabled = false;
-//         document.querySelector('.btn-dark').disabled = true;
-//     }
-// }
-// document
-//     .querySelector('.btn-primary')
-//     .addEventListener('click', tabelaPao);
-
-// document
-//     .querySelector('.btn-dark')
-//     .addEventListener('click', liberarTabuada);
-
-function gerarTabela() {
-    let preco = document.querySelector('#preco').value;
-    preco = preco.replace(',','.');
-    if (isNaN(preco) || preco == '') {
-        alert("Valor inválido!");
-    }
-    else {
-        preco = parseFloat(preco);
-        let htmlPreco = "";
-        for (let i = 1; i <= 50; i++) {
-            if (i == 1) {
-                htmlPreco += `
-                    <tr><td>1 pão</td>
-                        <td>R$ ${preco.toFixed(2)}</td>
-                    </tr>`;
-            } else {
-                htmlPreco += `
-                    <tr><td>${i} pães</td>
-                        <td>R$ ${(preco * i).toFixed(2)}</td>
-                    </tr>`;
-            }
+        if (validarCampos(nome, idade, salario)) {
+            funcionarios.push({ nome, idade, sexo, salario });
+            sessionStorage.setItem("funcionarios", JSON.stringify(funcionarios));
+            form.reset();
+            exibirFuncionarios();
+            btnAdicionar.textContent = "Recomeçar";
+        } else {
+            alert("Verifique os dados informados.");
         }
-        document.querySelector('.tabelaPreco').innerHTML = htmlPreco;
-    }
-}
-document
-    .querySelector('.btn-danger')
-    .addEventListener('click', gerarTabela);
+    });
+
+    exibirFuncionarios();
+});
